@@ -526,7 +526,7 @@ with tab6:
     edited = st.data_editor(
         pending_df, num_rows="dynamic", use_container_width=True,
         column_config={
-            "Expected Mark": st.column_config.SliderColumn(min_value=0, max_value=100, step=1)
+            "Expected Mark": st.column_config.NumberColumn(min_value=0, max_value=100, step=1, format="%d%%")
         }
     )
 
