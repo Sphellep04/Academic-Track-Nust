@@ -63,13 +63,50 @@ RAW = [
 
 COLS = ["Year","Study_Year","Sem_Num","Sem_Label","Course","Code","Marks","Result"]
 
-@st.cache_data
-def load_data():
-    df = pd.DataFrame(RAW, columns=COLS)
-    df["Passed"] = df["Result"] == "Pass"
-    df["Grade"] = df["Marks"].apply(grade_letter)
+EXCEL_PATH = r"C:\Users\AdminTC\OneDrive - NUST\Documents\Academic Track\Academic track.xlsx"
+
+SKILL_MAP = {
+    "Programming & Dev":     ["PRG1", "PRG2", "DGP", "CTE", "MAP", "WAD"],
+    "Data & Analytics":      ["DBF", "DTA", "ASP"],
+    "Mathematics":           ["MCI", "MCI2"],
+    "Systems & Networks":    ["COA", "OPS", "DTN", "DSA", "DSA1"],
+    "Software Engineering":  ["SPS", "SVV", "PTM"],
+    "Security & Ethics":     ["ISS", "EFC"],
+    "Innovation & Business": ["BMC", "DST", "ICE", "SYD", "EAP", "ICG"],
+    "AI & Algorithms":       ["ARI", "DSA2"],
+}
+
+def parse_excel(source):
+    raw = pd.read_excel(source, header=5, usecols="A:G", engine="openpyxl")
+    raw.columns = ["Year", "Study_Year", "Sem_Label", "Course", "Code", "Marks", "Result"]
+    raw["Year"]       = pd.to_numeric(raw["Year"], errors="coerce").ffill()
+    raw["Study_Year"] = raw["Study_Year"].ffill()
+    raw["Sem_Label"]  = raw["Sem_Label"].ffill()
+    # Drop rows with no course code (separators / empty rows)
+    raw = raw[raw["Code"].notna() & (~raw["Code"].astype(str).str.strip().isin(["", "Course Code"]))]
+    # Keep only Pass/Fail rows
+    raw["Result"] = raw["Result"].astype(str).str.strip()
+    raw = raw[raw["Result"].isin(["Pass", "Fail"])]
+    raw["Marks"]      = pd.to_numeric(raw["Marks"].replace({"N/A": None}), errors="coerce")
+    raw["Sem_Label"]  = raw["Sem_Label"].astype(str).str.replace("Semester ", "Sem ", regex=False)
+    raw["Sem_Num"]    = raw["Sem_Label"].str.extract(r"(\d+)").astype(float).fillna(0).astype(int)
+    raw["Year"]       = raw["Year"].fillna(0).astype(int)
+    raw["Course"]     = raw["Course"].astype(str).str.strip()
+    raw["Code"]       = raw["Code"].astype(str).str.strip()
+    return raw[COLS].reset_index(drop=True)
+
+def enrich(df):
+    df["Passed"]     = df["Result"] == "Pass"
+    df["Grade"]      = df["Marks"].apply(grade_letter)
     df["GPA_Points"] = df["Marks"].apply(marks_to_gpa)
     return df
+
+@st.cache_data
+def load_from_records():
+    return enrich(pd.DataFrame(RAW, columns=COLS))
+
+def load_from_excel(source):
+    return enrich(parse_excel(source))
 
 def grade_letter(m):
     if pd.isna(m): return "N/A"
@@ -128,16 +165,17 @@ def generate_pdf(df):
 
     return bytes(pdf.output())
 
-# ── Load ───────────────────────────────────────────────────────────────────
-df_all = load_data()
-df_graded = df_all[df_all["Marks"].notna()].copy()
-
 # ── Sidebar ────────────────────────────────────────────────────────────────
 with st.sidebar:
     st.image("https://upload.wikimedia.org/wikipedia/en/thumb/3/35/NUST_Namibia_Logo.png/200px-NUST_Namibia_Logo.png",
              width=120, use_container_width=False)
     st.markdown("### Shapopi Phellep")
     st.caption("BSc CS — Software Development")
+    st.divider()
+
+    st.markdown("**Data Source**")
+    uploaded = st.file_uploader("Upload Excel to update data", type=["xlsx"],
+                                help="Upload your Academic track.xlsx to refresh all charts live.")
     st.divider()
 
     st.markdown("**Filters**")
@@ -147,6 +185,27 @@ with st.sidebar:
     st.divider()
     st.caption("Built with Streamlit + Plotly")
 
+# ── Load ───────────────────────────────────────────────────────────────────
+import os
+
+if uploaded is not None:
+    try:
+        df_all = load_from_excel(uploaded)
+        st.sidebar.success("Live data loaded from Excel.")
+    except Exception as e:
+        st.sidebar.error(f"Could not read Excel: {e}")
+        df_all = load_from_records()
+elif os.path.exists(EXCEL_PATH):
+    try:
+        df_all = load_from_excel(EXCEL_PATH)
+        st.sidebar.info("Auto-loaded from local Excel file.")
+    except Exception:
+        df_all = load_from_records()
+else:
+    df_all = load_from_records()
+
+df_graded = df_all[df_all["Marks"].notna()].copy()
+
 # Apply filters
 df_view = df_graded[df_graded["Study_Year"].isin(years)].copy()
 if result_filter == "Pass only":
@@ -155,9 +214,10 @@ elif result_filter == "Fail only":
     df_view = df_view[~df_view["Passed"]]
 
 # ── Tabs ───────────────────────────────────────────────────────────────────
-tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
     "📊 Overview", "📈 Charts", "📋 Module Details",
-    "🔁 Retake Tracker", "🧮 GPA Calculator", "🎯 What-If Simulator", "📖 My Story"
+    "🔁 Retake Tracker", "🧮 GPA Calculator", "🎯 What-If Simulator",
+    "📖 My Story", "🕸️ Skills Radar"
 ])
 
 # ══════════════════════════════════════════════════════════════════════════
@@ -650,8 +710,8 @@ I'm finishing it as someone who learned, slowly and sometimes painfully, what it
             "Year 2 → Year 3 average",
             "#FF9800"
         )
-        stat_card("DTN Test (2025)", "66%", "First test at Salt — best yet", "#9C27B0")
-        stat_card("Graduation Target", "Oct 2025", "WIL in progress", PASS_COL)
+        stat_card("DTN Test (2026)", "66%", "First test at Salt — best yet", "#9C27B0")
+        stat_card("Graduation Target", "Oct 2026", "WIL in progress", PASS_COL)
 
         st.divider()
         st.markdown("##### Journey in One Line")
@@ -659,3 +719,133 @@ I'm finishing it as someone who learned, slowly and sometimes painfully, what it
             "From 2GB RAM to destiny — "
             "the machine had limits. I never did."
         )
+
+# ══════════════════════════════════════════════════════════════════════════
+# TAB 8 — SKILLS RADAR
+# ══════════════════════════════════════════════════════════════════════════
+with tab8:
+    st.markdown("### Skills Radar")
+    st.caption(
+        "Each domain is scored by the average final mark across its modules. "
+        "Shows where your strengths are and where growth happened."
+    )
+
+    # Use best/final attempt per module for the radar
+    final_radar = df_graded.sort_values("Year").drop_duplicates(subset=["Code"], keep="last")
+
+    # Build domain scores
+    domain_scores, domain_modules, domain_details = [], [], []
+    for domain, codes in SKILL_MAP.items():
+        subset = final_radar[final_radar["Code"].isin(codes)]
+        if not subset.empty:
+            avg  = subset["Marks"].mean()
+            mods = ", ".join(
+                f"{r['Code']} ({r['Marks']:.0f}%)" for _, r in subset.iterrows()
+            )
+            detail = subset[["Course","Code","Marks","Result"]].copy()
+        else:
+            avg  = 0
+            mods = "No data"
+            detail = pd.DataFrame()
+        domain_scores.append(round(avg, 1))
+        domain_modules.append(mods)
+        domain_details.append(detail)
+
+    domains = list(SKILL_MAP.keys())
+
+    col_radar, col_breakdown = st.columns([1, 1])
+
+    with col_radar:
+        # Close the polygon by repeating the first value
+        r_vals   = domain_scores + [domain_scores[0]]
+        theta    = domains + [domains[0]]
+        hover    = domain_modules + [domain_modules[0]]
+
+        fig_radar = go.Figure()
+        fig_radar.add_trace(go.Scatterpolar(
+            r=r_vals,
+            theta=theta,
+            fill="toself",
+            fillcolor="rgba(33, 150, 243, 0.15)",
+            line=dict(color=BLUE, width=2.5),
+            marker=dict(size=7, color=BLUE),
+            text=hover,
+            hovertemplate="<b>%{theta}</b><br>Avg: %{r}%<br>%{text}<extra></extra>",
+            name="Skill Score",
+        ))
+        # 50% reference ring
+        fig_radar.add_trace(go.Scatterpolar(
+            r=[50] * (len(domains) + 1),
+            theta=theta,
+            mode="lines",
+            line=dict(color="gray", dash="dash", width=1),
+            showlegend=False,
+            hoverinfo="skip",
+        ))
+        fig_radar.update_layout(
+            polar=dict(
+                radialaxis=dict(visible=True, range=[0, 100],
+                                tickvals=[25, 50, 75, 100],
+                                tickfont=dict(size=9)),
+                angularaxis=dict(tickfont=dict(size=11)),
+            ),
+            showlegend=False,
+            height=500,
+            margin=dict(t=30, b=30, l=60, r=60),
+        )
+        st.plotly_chart(fig_radar, use_container_width=True)
+
+        # Strongest / weakest callout
+        scored = [(d, s) for d, s in zip(domains, domain_scores) if s > 0]
+        if scored:
+            best_d,  best_s  = max(scored, key=lambda x: x[1])
+            worst_d, worst_s = min(scored, key=lambda x: x[1])
+            c1, c2 = st.columns(2)
+            c1.metric("Strongest Domain", best_d,  f"{best_s:.1f}%")
+            c2.metric("Growth Opportunity", worst_d, f"{worst_s:.1f}%")
+
+    with col_breakdown:
+        st.markdown("#### Domain Breakdown")
+        for domain, score, mods_str, detail in zip(domains, domain_scores, domain_modules, domain_details):
+            color = (PASS_COL if score >= 65 else
+                     ORANGE   if score >= 50 else
+                     FAIL_COL if score > 0  else "#9E9E9E")
+            with st.expander(f"**{domain}** — {score:.1f}%"):
+                if not detail.empty:
+                    detail_show = detail.copy()
+                    detail_show["Marks"] = detail_show["Marks"].apply(lambda x: f"{x:.0f}%")
+                    st.dataframe(
+                        detail_show.rename(columns={"Marks":"Final Mark"})
+                                   .set_index("Code"),
+                        use_container_width=True
+                    )
+                    # Mini bar for this domain
+                    fig_mini = px.bar(
+                        detail, x="Code", y="Marks",
+                        color="Result",
+                        color_discrete_map={"Pass": PASS_COL, "Fail": FAIL_COL},
+                        text="Marks",
+                    )
+                    fig_mini.add_hline(y=50, line_dash="dash", line_color="gray")
+                    fig_mini.update_traces(texttemplate="%{text:.0f}%", textposition="outside")
+                    fig_mini.update_layout(
+                        height=200, showlegend=False,
+                        margin=dict(t=5, b=5, l=5, r=5),
+                        yaxis_range=[0, 105],
+                        xaxis_title="", yaxis_title="Mark (%)",
+                    )
+                    st.plotly_chart(fig_mini, use_container_width=True)
+                else:
+                    st.caption("No graded modules mapped to this domain yet.")
+
+    st.divider()
+    st.markdown("#### All Domains at a Glance")
+    radar_df = pd.DataFrame({
+        "Domain": domains,
+        "Avg Mark (%)": domain_scores,
+        "Modules": domain_modules,
+    }).sort_values("Avg Mark (%)", ascending=False)
+    radar_df["Avg Mark (%)"] = radar_df["Avg Mark (%)"].apply(
+        lambda x: f"{x:.1f}%" if x > 0 else "No data"
+    )
+    st.dataframe(radar_df.set_index("Domain"), use_container_width=True)
