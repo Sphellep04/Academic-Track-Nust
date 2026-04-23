@@ -410,7 +410,7 @@ with tab3:
         return ""
 
     st.dataframe(
-        styled.style.applymap(colour_result, subset=["Result"]),
+        styled.style.map(colour_result, subset=["Result"]),
         use_container_width=True, height=500
     )
     st.caption(f"Showing {len(display_df)} of {len(df_all)} records")
