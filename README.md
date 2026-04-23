@@ -1,4 +1,4 @@
-# 🎓 Academic Progress Dashboard — Shapopi Phellep
+# 🎓 Academic Progress Dashboard — Phellep Shapopi
 
 [![Streamlit](https://img.shields.io/badge/Built%20with-Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://python.org)
@@ -126,4 +126,4 @@ App opens at **`http://localhost:8501`**
 ---
 
 *BSc Computer Science — Software Development | Namibia University of Science and Technology*
-*Shapopi Phellep | Expected Graduation: October 2026*
+*Phellep Shapopi | Expected Graduation: October 2026*

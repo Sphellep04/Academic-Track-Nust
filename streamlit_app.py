@@ -9,7 +9,7 @@ from io import BytesIO
 
 # ── Page config ────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Academic Dashboard | Shapopi Phellep",
+    page_title="Academic Dashboard | Phellep Shapopi",
     page_icon="🎓",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -129,7 +129,7 @@ def generate_pdf(df):
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Helvetica", "B", 16)
-    pdf.cell(0, 10, "Academic Report — Shapopi Phellep", ln=True, align="C")
+    pdf.cell(0, 10, "Academic Report — Phellep Shapopi", ln=True, align="C")
     pdf.set_font("Helvetica", "", 11)
     pdf.cell(0, 8, "NUST | BSc Computer Science (Software Development)", ln=True, align="C")
     pdf.ln(6)
@@ -169,7 +169,7 @@ def generate_pdf(df):
 with st.sidebar:
     st.image("https://upload.wikimedia.org/wikipedia/en/thumb/3/35/NUST_Namibia_Logo.png/200px-NUST_Namibia_Logo.png",
              width=120, use_container_width=False)
-    st.markdown("### Shapopi Phellep")
+    st.markdown("### Phellep Shapopi")
     st.caption("BSc CS — Software Development")
     st.divider()
 
@@ -183,7 +183,7 @@ with st.sidebar:
                            default=["Year 1","Year 2","Year 3","Year 4"])
     result_filter = st.radio("Result", ["All", "Pass only", "Fail only"], horizontal=True)
     st.divider()
-    st.caption("Built with Streamlit + Plotly")
+    st.caption("Built by Phellep.dev")
 
 # ── Load ───────────────────────────────────────────────────────────────────
 import os
@@ -214,9 +214,9 @@ elif result_filter == "Fail only":
     df_view = df_view[~df_view["Passed"]]
 
 # ── Tabs ───────────────────────────────────────────────────────────────────
-tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
     "📊 Overview", "📈 Charts", "📋 Module Details",
-    "🔁 Retake Tracker", "🧮 GPA Calculator", "🎯 What-If Simulator",
+    "🔁 Retake Tracker", "🧮 GPA Calculator",
     "📖 My Story", "🕸️ Skills Radar"
 ])
 
@@ -507,72 +507,9 @@ with tab5:
                  .set_index("Year"), use_container_width=True)
 
 # ══════════════════════════════════════════════════════════════════════════
-# TAB 6 — WHAT-IF SIMULATOR
+# TAB 6 — MY STORY
 # ══════════════════════════════════════════════════════════════════════════
 with tab6:
-    st.markdown("### What-If Simulator")
-    st.caption("Simulate how upcoming or pending results will affect your GPA and pass rate.")
-
-    final_for_sim = df_graded.sort_values("Year").drop_duplicates(subset=["Code"], keep="last").copy()
-
-    st.markdown("#### Pending / Upcoming Modules")
-    st.markdown("Add modules you still need to complete and set expected marks:")
-
-    pending_defaults = [
-        {"Module": "Data Networks (DTN)", "Expected Mark": 55},
-        {"Module": "New Module 1", "Expected Mark": 60},
-    ]
-    pending_df = pd.DataFrame(pending_defaults)
-    edited = st.data_editor(
-        pending_df, num_rows="dynamic", use_container_width=True,
-        column_config={
-            "Expected Mark": st.column_config.NumberColumn(min_value=0, max_value=100, step=1, format="%d%%")
-        }
-    )
-
-    if not edited.empty and edited["Expected Mark"].notna().any():
-        sim_marks = edited["Expected Mark"].dropna().tolist()
-        sim_gpa_points = [marks_to_gpa(m) for m in sim_marks]
-        sim_passed = [m >= 50 for m in sim_marks]
-
-        all_marks = list(final_for_sim["Marks"]) + sim_marks
-        all_gpa   = list(final_for_sim["GPA_Points"]) + sim_gpa_points
-        all_pass  = list(final_for_sim["Passed"])  + sim_passed
-
-        new_avg      = np.mean(all_marks)
-        new_gpa      = np.mean(all_gpa)
-        new_pass_rate= 100 * np.mean(all_pass)
-
-        st.divider()
-        st.markdown("#### Projected Outcome")
-        c1, c2, c3 = st.columns(3)
-        c1.metric("Projected Avg Mark", f"{new_avg:.1f}%",
-                  delta=f"{new_avg - df_graded['Marks'].mean():.1f}%")
-        c2.metric("Projected GPA", f"{new_gpa:.2f}",
-                  delta=f"{new_gpa - df_graded['GPA_Points'].mean():.2f}")
-        c3.metric("Projected Pass Rate", f"{new_pass_rate:.1f}%",
-                  delta=f"{new_pass_rate - 100*df_graded['Passed'].mean():.1f}%")
-
-        st.markdown("#### Mark Needed to Hit a Target GPA")
-        target_gpa = st.slider("Target GPA", 1.0, 4.0, 3.0, 0.1)
-        n_current = len(final_for_sim)
-        n_sim     = len(edited)
-        needed_gpa_pts = (target_gpa * (n_current + n_sim) - final_for_sim["GPA_Points"].sum()) / max(n_sim,1)
-        needed_mark = (
-            75 if needed_gpa_pts >= 4.0 else
-            65 if needed_gpa_pts >= 3.0 else
-            55 if needed_gpa_pts >= 2.0 else
-            50 if needed_gpa_pts >= 1.0 else 0
-        )
-        if needed_gpa_pts > 4.0:
-            st.warning(f"A GPA of {target_gpa:.1f} is not achievable with {n_sim} pending module(s). Reduce target or add more modules.")
-        else:
-            st.info(f"To reach a GPA of **{target_gpa:.1f}**, you need roughly **{needed_mark}%+ (grade {grade_letter(needed_mark)})** on average across your {n_sim} pending module(s).")
-
-# ══════════════════════════════════════════════════════════════════════════
-# TAB 7 — MY STORY
-# ══════════════════════════════════════════════════════════════════════════
-with tab7:
     # Computed stats to embed in the story
     avg_y2 = df_graded[df_graded["Study_Year"] == "Year 2"]["Marks"].mean()
     avg_y3 = df_graded[df_graded["Study_Year"] == "Year 3"]["Marks"].mean()
@@ -721,9 +658,9 @@ I'm finishing it as someone who learned, slowly and sometimes painfully, what it
         )
 
 # ══════════════════════════════════════════════════════════════════════════
-# TAB 8 — SKILLS RADAR
+# TAB 7 — SKILLS RADAR
 # ══════════════════════════════════════════════════════════════════════════
-with tab8:
+with tab7:
     st.markdown("### Skills Radar")
     st.caption(
         "Each domain is scored by the average final mark across its modules. "
