@@ -123,13 +123,6 @@ App opens at **`http://localhost:8501`**
 
 ---
 
-## Deploy for Free (Streamlit Community Cloud)
-
-1. Push this repo to GitHub (make it public)
-2. Go to [share.streamlit.io](https://share.streamlit.io) and sign in with GitHub
-3. Select the repo, set the main file to `streamlit_app.py`
-4. Click **Deploy** — you get a free public URL instantly
-
 ---
 
 *BSc Computer Science — Software Development | Namibia University of Science and Technology*
