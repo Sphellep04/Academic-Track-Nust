@@ -599,8 +599,7 @@ At Salt, I was doing real work for the first time. Internal projects, industry e
 networking labs, specifically — that started to unlock things DTN had been trying to teach me in theory.
 Practical experience did what textbooks couldn't quite do alone.
 
-I'm currently doing my **WIL (Work Integrated Learning).** My first DTN test came back at **66%.**
-For that module, and where I've come from with it, that number means more to me than any A I've received.
+I'm currently doing my **WIL (Work Integrated Learning)**.
 DTN is the last wall, and it's coming down.
 
 ---
