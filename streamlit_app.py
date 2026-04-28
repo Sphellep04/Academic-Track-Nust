@@ -167,7 +167,7 @@ def generate_pdf(df):
 
 # ── Sidebar ────────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.image("Nust-Logo.png",
+    st.image(r"C:\Users\AdminTC\OneDrive - NUST\Documents\Academic Track\Academic-Track-Nust\Nust-Logo1.png",
              width=120, use_container_width=False)
     st.markdown("### Phellep Shapopi")
     st.caption("BSc CS — Software Development")
