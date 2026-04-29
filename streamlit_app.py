@@ -521,18 +521,18 @@ with tab6:
 # The Story Behind the Numbers
 
 > *People look at a transcript and see numbers. A grade here, a fail there, a retake somewhere in between.
-> What they don't see is everything that sat behind those numbers — the commute you couldn't afford,
+> What they don't see is everything that sat behind those numbers - the commute you couldn't afford,
 > the laptop that could barely open two tabs, the test you missed because the month had run out before it had.*
 
 ---
 
 ### Before NUST
 
-I didn't start here. Before NUST, I was at UNAM studying Secondary Education — Mathematics and Physical
+I didn't start here. Before NUST, I was at UNAM studying Secondary Education - Mathematics and Physical
 Science. On paper, a solid path. In reality, it wasn't mine.
 
 I was a dancer. Still am, in some way that never fully leaves you. But dancing came with a circle, and
-that circle wasn't pointed anywhere good. I knew it, and I knew I had to make a move — not just change
+that circle wasn't pointed anywhere good. I knew it, and I knew I had to make a move, not just change
 institutions, but change environments entirely. So I made a decision: go to Windhoek, stop dancing,
 reset, and rebuild.
 
@@ -548,7 +548,7 @@ away. Not dramatically. Just slowly, the way focus slips when you're not watchin
 
 Then Year 2 came, and the weight of everything started to show up in the numbers.
 
-Living in Katutura — one of the furthest points from campus — meant that getting to a lecture wasn't
+Living in Katutura - one of the furthest points from campus meant that getting to a lecture wasn't
 just a matter of showing up. It was a budget decision. Some mornings, the money wasn't there, so
 neither was I. Missed classes turned into missed tests. Late submissions. Pressure stacking up with
 nowhere to put it.
@@ -558,9 +558,9 @@ practice, couldn't run environments, couldn't do half the practical work the deg
 what I could, when I could, with what I had. Looking back, investing in a proper machine earlier would
 have changed a lot — but I wasn't wise enough then to see it as an investment rather than an expense.
 
-Trading also found its way into the picture at some point — another pull on attention, time, and focus.
+Trading also found its way into the picture at some point - another pull on attention, time, and focus.
 I won't draw it all out, but it had its effect. What I will say is that I've since found a way to carry
-all of it — trading, work, school, and life — without any one of them swallowing the others. That balance
+all of it - trading, work, school, and life - without any one of them swallowing the others. That balance
 took real time to build. But it's built.
 
 Those were hard years. The data shows it clearly — 2022 was my lowest point, three fails in one semester.
