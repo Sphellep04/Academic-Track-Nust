@@ -105,25 +105,5 @@ openpyxl     — Excel data reading
 
 ---
 
-## Run Locally
-
-```bash
-# 1. Clone the repo
-git clone https://github.com/<your-username>/Academic-Track-Nust.git
-cd Academic-Track-Nust
-
-# 2. Install dependencies
-pip install -r requirements.txt
-
-# 3. Launch
-streamlit run streamlit_app.py
-```
-
-App opens at **`http://localhost:8501`**
-
----
-
----
-
 *BSc Computer Science — Software Development | Namibia University of Science and Technology*
 *Phellep Shapopi | Expected Graduation: October 2026*
