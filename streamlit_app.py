@@ -129,7 +129,7 @@ def generate_pdf(df):
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Helvetica", "B", 16)
-    pdf.cell(0, 10, "Academic Report — Phellep Shapopi", ln=True, align="C")
+    pdf.cell(0, 10, "Academic Report: Phellep Shapopi", ln=True, align="C")
     pdf.set_font("Helvetica", "", 11)
     pdf.cell(0, 8, "NUST | BSc Computer Science (Software Development)", ln=True, align="C")
     pdf.ln(6)
@@ -169,7 +169,7 @@ def generate_pdf(df):
 with st.sidebar:
     st.image("Nust-Logo1.png", width=120, use_container_width=False)
     st.markdown("### Phellep Shapopi")
-    st.caption("BSc CS — Software Development")
+    st.caption("BSc Computer Science (Software Development)")
     st.divider()
 
     st.markdown("**Data Source**")
@@ -224,7 +224,7 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
 # ══════════════════════════════════════════════════════════════════════════
 with tab1:
     st.title("🎓 Academic Dashboard")
-    st.markdown("**Namibia University of Science and Technology** — Academic Progress Report")
+    st.markdown("**Namibia University of Science and Technology** Academic Progress Report")
     st.divider()
 
     # KPI cards
@@ -281,11 +281,11 @@ with tab1:
     # Timeline summary
     st.markdown("#### Academic Timeline")
     timeline_data = [
-        {"Year": "2021", "Event": "Enrolled at NUST — Year 1 begins", "Status": "✅"},
-        {"Year": "2022", "Event": "Year 2 Sem 3 — First fails (ASP, PRG2, ICE, DTN)", "Status": "⚠️"},
-        {"Year": "2023", "Event": "Retook Sem 3 & 4 — Cleared ASP & ICE, PRG2 still failing", "Status": "🔁"},
-        {"Year": "2024", "Event": "Year 3 — Cleared PRG2 (75%). SVV failed, then passed in 2025", "Status": "📈"},
-        {"Year": "2025", "Event": "Year 4 — 4 passes, DTN still outstanding", "Status": "🎯"},
+        {"Year": "2021", "Event": "Enrolled at NUST: Year 1 begins", "Status": "✅"},
+        {"Year": "2022", "Event": "Year 2 Sem 3: First fails (ASP, PRG2, ICE, DTN)", "Status": "⚠️"},
+        {"Year": "2023", "Event": "Retook Sem 3 & 4: Cleared ASP & ICE, PRG2 still failing", "Status": "🔁"},
+        {"Year": "2024", "Event": "Year 3: Cleared PRG2 (75%). SVV failed, then passed in 2025", "Status": "📈"},
+        {"Year": "2025", "Event": "Year 4: 4 passes, DTN still outstanding", "Status": "🎯"},
     ]
     st.dataframe(pd.DataFrame(timeline_data).set_index("Year"), use_container_width=True)
 
@@ -528,7 +528,7 @@ with tab6:
 
 ### Before NUST
 
-I didn't start here. Before NUST, I was at UNAM studying Secondary Education - Mathematics and Physical
+I didn't start here. Before NUST, I was at UNAM studying Secondary Education: Mathematics and Physical
 Science. On paper, a solid path. In reality, it wasn't mine.
 
 I was a dancer. Still am, in some way that never fully leaves you. But dancing came with a circle, and
@@ -542,13 +542,13 @@ What I didn't know was that **Windhoek has its own jungle.**
 
 ### Year 1 Was Fine — Until It Wasn't
 
-First year at NUST went reasonably well. New city, new degree, new version of myself — I was motivated.
+First year at NUST went reasonably well. New city, new degree, new version of myself I was motivated.
 But the city has a pull of its own, and somewhere between orientation and second semester, I got carried
 away. Not dramatically. Just slowly, the way focus slips when you're not watching it.
 
 Then Year 2 came, and the weight of everything started to show up in the numbers.
 
-Living in Katutura - one of the furthest points from campus meant that getting to a lecture wasn't
+Living in Katutura one of the furthest points from campus meant that getting to a lecture wasn't
 just a matter of showing up. It was a budget decision. Some mornings, the money wasn't there, so
 neither was I. Missed classes turned into missed tests. Late submissions. Pressure stacking up with
 nowhere to put it.
@@ -556,14 +556,14 @@ nowhere to put it.
 The laptop situation didn't help. A Lenovo with 2GB of RAM is a documentation machine at best. I couldn't
 practice, couldn't run environments, couldn't do half the practical work the degree required. I learned
 what I could, when I could, with what I had. Looking back, investing in a proper machine earlier would
-have changed a lot — but I wasn't wise enough then to see it as an investment rather than an expense.
+have changed a lot but I wasn't wise enough then to see it as an investment rather than an expense.
 
 Trading also found its way into the picture at some point - another pull on attention, time, and focus.
 I won't draw it all out, but it had its effect. What I will say is that I've since found a way to carry
-all of it - trading, work, school, and life - without any one of them swallowing the others. That balance
+all of it; trading, work, school, and life without any one of them swallowing the others. That balance
 took real time to build. But it's built.
 
-Those were hard years. The data shows it clearly — 2022 was my lowest point, three fails in one semester.
+Those were hard years. The data shows it clearly 2022 was my lowest point, three fails in one semester.
 That's not a statistic I'm hiding. It's a chapter I earned.
 
 ---
@@ -574,7 +574,7 @@ In 2023, I made a plan and moved closer to campus. It sounds small. It wasn't.
 
 Proximity changed everything. Getting to class was no longer a financial calculation. I was present more,
 engaged more, and the results followed almost immediately. **The grades climbed.** You can see it in the
-charts — the upward trend from 2023 onward isn't luck. It's what consistency looks like when the basic
+charts the upward trend from 2023 onward isn't luck. It's what consistency looks like when the basic
 barriers are finally removed.
 
 That move was one of the best decisions I made in this degree.
@@ -589,16 +589,16 @@ various circumstances. It has been the stubborn one.
 But something shifted when formal academics paused and the real world began.
 
 In the second semester of 2025, I had no modules and no internship secured. Instead of waiting it out,
-I entered the **MICT Hackathon** — partly out of determination, partly because it was the only door I
+I entered the **MICT Hackathon** partly out of determination, partly because it was the only door I
 could see. We made it through. That hackathon led directly to an internship opportunity at **Salt Essentials IT**,
 and on **2 February 2026** I walked in for my first day of work. That opportunity turned into an education
 of a completely different kind.
 
-At Salt, I was doing real work for the first time. Internal projects, industry exposure, and labs —
-networking labs, specifically — that started to unlock things DTN had been trying to teach me in theory.
+At Salt, I was doing real work for the first time. Internal projects, industry exposure, and labs-
+networking labs, specifically that started to unlock things DTN had been trying to teach me in theory.
 Practical experience did what textbooks couldn't quite do alone.
 
-I'm currently doing my **WIL (Work Integrated Learning)**.
+I just completed my **WIL (Work Integrated Learning)**.
 DTN is the last wall, and it's coming down.
 
 ---
@@ -608,7 +608,7 @@ DTN is the last wall, and it's coming down.
 **Expected graduation: October 2026.**
 
 The dashboard you're looking at is a record of four years of navigating a degree with limited resources,
-the wrong environments, costly mistakes, and — eventually — the kind of growth that only comes from being
+the wrong environments, costly mistakes, and eventually the kind of growth that only comes from being
 genuinely tested.
 
 I started this as a student who had too much going on and not enough going right.
@@ -645,13 +645,13 @@ I'm finishing it as someone who learned, slowly and sometimes painfully, what it
             "Year 2 → Year 3 average",
             "#FF9800"
         )
-        stat_card("DTN Test (2026)", "66%", "First test at Salt — best yet", "#9C27B0")
+        stat_card("DTN Test 1 (2026)", "66%", "best yet", "#9C27B0")
         stat_card("Graduation Target", "Oct 2026", "WIL in progress", PASS_COL)
 
         st.divider()
         st.markdown("##### Journey in One Line")
         st.info(
-            "From 2GB RAM to destiny — "
+            "From 2GB RAM to destiny "
             "the machine had limits. I never did."
         )
 
