@@ -59,41 +59,22 @@ RAW = [
     (2025,"Year 4",7,"Sem 7","Mobile Application Development","MAP",53,"Pass"),
     (2025,"Year 4",7,"Sem 7","Data Networks","DTN",38,"Fail"),
     (2025,"Year 4",7,"Sem 7","Software Verification & Validation","SVV",60,"Pass"),
+    (2026,"Year 4",8,"Sem 8","Data Networks","DTN",64,"Pass"),
+    (2026,"Year 4",8,"Sem 8","Work Integrated Learning","WSD",70,"Pass"),
 ]
 
 COLS = ["Year","Study_Year","Sem_Num","Sem_Label","Course","Code","Marks","Result"]
-
-EXCEL_PATH = r"C:\Users\AdminTC\OneDrive - NUST\Documents\Academic Track\Academic track.xlsx"
 
 SKILL_MAP = {
     "Programming & Dev":     ["PRG1", "PRG2", "DGP", "CTE", "MAP", "WAD"],
     "Data & Analytics":      ["DBF", "DTA", "ASP"],
     "Mathematics":           ["MCI", "MCI2"],
     "Systems & Networks":    ["COA", "OPS", "DTN", "DSA", "DSA1"],
-    "Software Engineering":  ["SPS", "SVV", "PTM"],
+    "Software Engineering":  ["SPS", "SVV", "PTM", "WSD"],
     "Security & Ethics":     ["ISS", "EFC"],
     "Innovation & Business": ["BMC", "DST", "ICE", "SYD", "EAP", "ICG"],
     "AI & Algorithms":       ["ARI", "DSA2"],
 }
-
-def parse_excel(source):
-    raw = pd.read_excel(source, header=5, usecols="A:G", engine="openpyxl")
-    raw.columns = ["Year", "Study_Year", "Sem_Label", "Course", "Code", "Marks", "Result"]
-    raw["Year"]       = pd.to_numeric(raw["Year"], errors="coerce").ffill()
-    raw["Study_Year"] = raw["Study_Year"].ffill()
-    raw["Sem_Label"]  = raw["Sem_Label"].ffill()
-    # Drop rows with no course code (separators / empty rows)
-    raw = raw[raw["Code"].notna() & (~raw["Code"].astype(str).str.strip().isin(["", "Course Code"]))]
-    # Keep only Pass/Fail rows
-    raw["Result"] = raw["Result"].astype(str).str.strip()
-    raw = raw[raw["Result"].isin(["Pass", "Fail"])]
-    raw["Marks"]      = pd.to_numeric(raw["Marks"].replace({"N/A": None}), errors="coerce")
-    raw["Sem_Label"]  = raw["Sem_Label"].astype(str).str.replace("Semester ", "Sem ", regex=False)
-    raw["Sem_Num"]    = raw["Sem_Label"].str.extract(r"(\d+)").astype(float).fillna(0).astype(int)
-    raw["Year"]       = raw["Year"].fillna(0).astype(int)
-    raw["Course"]     = raw["Course"].astype(str).str.strip()
-    raw["Code"]       = raw["Code"].astype(str).str.strip()
-    return raw[COLS].reset_index(drop=True)
 
 def enrich(df):
     df["Passed"]     = df["Result"] == "Pass"
@@ -104,9 +85,6 @@ def enrich(df):
 @st.cache_data
 def load_from_records():
     return enrich(pd.DataFrame(RAW, columns=COLS))
-
-def load_from_excel(source):
-    return enrich(parse_excel(source))
 
 def grade_letter(m):
     if pd.isna(m): return "N/A"
@@ -129,7 +107,7 @@ def generate_pdf(df):
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Helvetica", "B", 16)
-    pdf.cell(0, 10, "Academic Report — Phellep Shapopi", ln=True, align="C")
+    pdf.cell(0, 10, "Academic Report - Phellep Shapopi", ln=True, align="C")
     pdf.set_font("Helvetica", "", 11)
     pdf.cell(0, 8, "NUST | BSc Computer Science (Software Development)", ln=True, align="C")
     pdf.ln(6)
@@ -169,12 +147,7 @@ def generate_pdf(df):
 with st.sidebar:
     st.image("Nust-Logo1.png", width=120, use_container_width=False)
     st.markdown("### Phellep Shapopi")
-    st.caption("BSc CS — Software Development")
-    st.divider()
-
-    st.markdown("**Data Source**")
-    uploaded = st.file_uploader("Upload Excel to update data", type=["xlsx"],
-                                help="Upload your Academic track.xlsx to refresh all charts live.")
+    st.caption("BSc CS - Software Development")
     st.divider()
 
     st.markdown("**Filters**")
@@ -185,24 +158,7 @@ with st.sidebar:
     st.caption("Built by Phellep.dev")
 
 # ── Load ───────────────────────────────────────────────────────────────────
-import os
-
-if uploaded is not None:
-    try:
-        df_all = load_from_excel(uploaded)
-        st.sidebar.success("Live data loaded from Excel.")
-    except Exception as e:
-        st.sidebar.error(f"Could not read Excel: {e}")
-        df_all = load_from_records()
-elif os.path.exists(EXCEL_PATH):
-    try:
-        df_all = load_from_excel(EXCEL_PATH)
-        st.sidebar.info("Auto-loaded from local Excel file.")
-    except Exception:
-        df_all = load_from_records()
-else:
-    df_all = load_from_records()
-
+df_all = load_from_records()
 df_graded = df_all[df_all["Marks"].notna()].copy()
 
 # Apply filters
@@ -214,17 +170,17 @@ elif result_filter == "Fail only":
 
 # ── Tabs ───────────────────────────────────────────────────────────────────
 tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
-    "📊 Overview", "📈 Charts", "📋 Module Details",
-    "🔁 Retake Tracker", "🧮 GPA Calculator",
-    "📖 My Story", "🕸️ Skills Radar"
+    "Overview", "Charts", "Module Details",
+    "Retake Tracker", "GPA Calculator",
+    "My Story", "Skills Radar"
 ])
 
 # ══════════════════════════════════════════════════════════════════════════
-# TAB 1 — OVERVIEW
+# TAB 1 - OVERVIEW
 # ══════════════════════════════════════════════════════════════════════════
 with tab1:
     st.title("🎓 Academic Dashboard")
-    st.markdown("**Namibia University of Science and Technology** — Academic Progress Report")
+    st.markdown("**Namibia University of Science and Technology** - Academic Progress Report")
     st.divider()
 
     # KPI cards
@@ -281,11 +237,12 @@ with tab1:
     # Timeline summary
     st.markdown("#### Academic Timeline")
     timeline_data = [
-        {"Year": "2021", "Event": "Enrolled at NUST — Year 1 begins", "Status": "✅"},
-        {"Year": "2022", "Event": "Year 2 Sem 3 — First fails (ASP, PRG2, ICE, DTN)", "Status": "⚠️"},
-        {"Year": "2023", "Event": "Retook Sem 3 & 4 — Cleared ASP & ICE, PRG2 still failing", "Status": "🔁"},
-        {"Year": "2024", "Event": "Year 3 — Cleared PRG2 (75%). SVV failed, then passed in 2025", "Status": "📈"},
-        {"Year": "2025", "Event": "Year 4 — 4 passes, DTN still outstanding", "Status": "🎯"},
+        {"Year": "2021", "Event": "Enrolled at NUST - Year 1 begins", "Status": "✅"},
+        {"Year": "2022", "Event": "Year 2 Sem 3 - First fails (ASP, PRG2, ICE, DTN)", "Status": "⚠️"},
+        {"Year": "2023", "Event": "Retook Sem 3 & 4 - Cleared ASP & ICE, PRG2 still failing", "Status": "🔁"},
+        {"Year": "2024", "Event": "Year 3 - Cleared PRG2 (75%). SVV failed, then passed in 2025", "Status": "📈"},
+        {"Year": "2025", "Event": "Year 4 - 4 passes, DTN still outstanding", "Status": "🎯"},
+        {"Year": "2026", "Event": "DTN passed (64%) and WIL complete (70%) - degree requirements done", "Status": "🎓"},
     ]
     st.dataframe(pd.DataFrame(timeline_data).set_index("Year"), use_container_width=True)
 
@@ -298,7 +255,7 @@ with tab1:
                            file_name="Shapopi_Academic_Report.pdf", mime="application/pdf")
 
 # ══════════════════════════════════════════════════════════════════════════
-# TAB 2 — CHARTS
+# TAB 2 - CHARTS
 # ══════════════════════════════════════════════════════════════════════════
 with tab2:
     st.markdown("### Interactive Charts")
@@ -345,7 +302,7 @@ with tab2:
 
     # Chart 3: Performance trend
     with col2:
-        st.markdown("#### Performance Trend (2021–2025)")
+        st.markdown("#### Performance Trend (2021–2026)")
         yr_trend = df_graded.groupby("Year")["Marks"].mean().reset_index()
         slope, intercept, r, _, _ = stats.linregress(yr_trend["Year"], yr_trend["Marks"])
         trend_y = slope * yr_trend["Year"] + intercept
@@ -386,7 +343,7 @@ with tab2:
     st.plotly_chart(fig5, use_container_width=True)
 
 # ══════════════════════════════════════════════════════════════════════════
-# TAB 3 — MODULE DETAILS
+# TAB 3 - MODULE DETAILS
 # ══════════════════════════════════════════════════════════════════════════
 with tab3:
     st.markdown("### Module Record")
@@ -415,7 +372,7 @@ with tab3:
     st.caption(f"Showing {len(display_df)} of {len(df_all)} records")
 
 # ══════════════════════════════════════════════════════════════════════════
-# TAB 4 — RETAKE TRACKER
+# TAB 4 - RETAKE TRACKER
 # ══════════════════════════════════════════════════════════════════════════
 with tab4:
     st.markdown("### Retake Tracker")
@@ -429,7 +386,7 @@ with tab4:
         course_name = sub.iloc[0]["Course"]
         final_status = sub.iloc[-1]["Result"]
         icon = "✅" if final_status == "Pass" else "❌"
-        with st.expander(f"{icon} **{code}** — {course_name}  ({len(sub)} attempts)"):
+        with st.expander(f"{icon} **{code}** - {course_name}  ({len(sub)} attempts)"):
             cols = st.columns(len(sub))
             for i, (col, (_, row)) in enumerate(zip(cols, sub.iterrows())):
                 with col:
@@ -466,7 +423,7 @@ with tab4:
         st.success("All retaken modules have been cleared!")
 
 # ══════════════════════════════════════════════════════════════════════════
-# TAB 5 — GPA CALCULATOR
+# TAB 5 - GPA CALCULATOR
 # ══════════════════════════════════════════════════════════════════════════
 with tab5:
     st.markdown("### GPA Calculator")
@@ -506,7 +463,7 @@ with tab5:
                  .set_index("Year"), use_container_width=True)
 
 # ══════════════════════════════════════════════════════════════════════════
-# TAB 6 — MY STORY
+# TAB 6 - MY STORY
 # ══════════════════════════════════════════════════════════════════════════
 with tab6:
     # Computed stats to embed in the story
@@ -540,9 +497,9 @@ What I didn't know was that **Windhoek has its own jungle.**
 
 ---
 
-### Year 1 Was Fine — Until It Wasn't
+### Year 1 Was Fine - Until It Wasn't
 
-First year at NUST went reasonably well. New city, new degree, new version of myself — I was motivated.
+First year at NUST went reasonably well. New city, new degree, new version of myself - I was motivated.
 But the city has a pull of its own, and somewhere between orientation and second semester, I got carried
 away. Not dramatically. Just slowly, the way focus slips when you're not watching it.
 
@@ -556,14 +513,14 @@ nowhere to put it.
 The laptop situation didn't help. A Lenovo with 2GB of RAM is a documentation machine at best. I couldn't
 practice, couldn't run environments, couldn't do half the practical work the degree required. I learned
 what I could, when I could, with what I had. Looking back, investing in a proper machine earlier would
-have changed a lot — but I wasn't wise enough then to see it as an investment rather than an expense.
+have changed a lot - but I wasn't wise enough then to see it as an investment rather than an expense.
 
 Trading also found its way into the picture at some point - another pull on attention, time, and focus.
 I won't draw it all out, but it had its effect. What I will say is that I've since found a way to carry
 all of it - trading, work, school, and life - without any one of them swallowing the others. That balance
 took real time to build. But it's built.
 
-Those were hard years. The data shows it clearly — 2022 was my lowest point, three fails in one semester.
+Those were hard years. The data shows it clearly - 2022 was my lowest point, three fails in one semester.
 That's not a statistic I'm hiding. It's a chapter I earned.
 
 ---
@@ -574,7 +531,7 @@ In 2023, I made a plan and moved closer to campus. It sounds small. It wasn't.
 
 Proximity changed everything. Getting to class was no longer a financial calculation. I was present more,
 engaged more, and the results followed almost immediately. **The grades climbed.** You can see it in the
-charts — the upward trend from 2023 onward isn't luck. It's what consistency looks like when the basic
+charts - the upward trend from 2023 onward isn't luck. It's what consistency looks like when the basic
 barriers are finally removed.
 
 That move was one of the best decisions I made in this degree.
@@ -583,23 +540,23 @@ That move was one of the best decisions I made in this degree.
 
 ### DTN and the Long Game
 
-If one module has defined the difficulty of this journey, it's **DTN — Data Networks.** Three attempts,
+If one module has defined the difficulty of this journey, it's **DTN - Data Networks.** Three attempts,
 various circumstances. It has been the stubborn one.
 
 But something shifted when formal academics paused and the real world began.
 
 In the second semester of 2025, I had no modules and no internship secured. Instead of waiting it out,
-I entered the **MICT Hackathon** — partly out of determination, partly because it was the only door I
+I entered the **MICT Hackathon** - partly out of determination, partly because it was the only door I
 could see. We made it through. That hackathon led directly to an internship opportunity at **Salt Essentials IT**,
 and on **2 February 2026** I walked in for my first day of work. That opportunity turned into an education
 of a completely different kind.
 
-At Salt, I was doing real work for the first time. Internal projects, industry exposure, and labs —
-networking labs, specifically — that started to unlock things DTN had been trying to teach me in theory.
+At Salt, I was doing real work for the first time. Internal projects, industry exposure, and labs -
+networking labs, specifically - that started to unlock things DTN had been trying to teach me in theory.
 Practical experience did what textbooks couldn't quite do alone.
 
-I'm currently doing my **WIL (Work Integrated Learning)**.
-DTN is the last wall, and it's coming down.
+In 2026, I completed my **WIL (Work Integrated Learning)** with a 70% pass, and finally cleared
+**DTN** on the fourth attempt with 64%. The last wall came down.
 
 ---
 
@@ -607,8 +564,8 @@ DTN is the last wall, and it's coming down.
 
 **Expected graduation: October 2026.**
 
-The dashboard you're looking at is a record of four years of navigating a degree with limited resources,
-the wrong environments, costly mistakes, and — eventually — the kind of growth that only comes from being
+The dashboard you're looking at is a record of five years of navigating a degree with limited resources,
+the wrong environments, costly mistakes, and - eventually - the kind of growth that only comes from being
 genuinely tested.
 
 I started this as a student who had too much going on and not enough going right.
@@ -617,7 +574,7 @@ I'm finishing it as someone who learned, slowly and sometimes painfully, what it
 **The grades got better. So did I.**
 
 ---
-*BSc Computer Science — Software Development | Namibia University of Science and Technology*
+*BSc Computer Science - Software Development | Namibia University of Science and Technology*
 """)
 
     with col_stats:
@@ -635,7 +592,7 @@ I'm finishing it as someone who learned, slowly and sometimes painfully, what it
                 unsafe_allow_html=True
             )
 
-        stat_card("Years at NUST", "4", "2021 – 2025", BLUE)
+        stat_card("Years at NUST", "5", "2021 – 2026", BLUE)
         stat_card("Modules Attempted", str(len(df_all)), "across all semesters", BLUE)
         stat_card("Overall Pass Rate", f"{100*df_graded['Passed'].mean():.0f}%",
                   f"{int(df_graded['Passed'].sum())} passed", PASS_COL)
@@ -645,18 +602,18 @@ I'm finishing it as someone who learned, slowly and sometimes painfully, what it
             "Year 2 → Year 3 average",
             "#FF9800"
         )
-        stat_card("DTN Test (2026)", "66%", "First test at Salt — best yet", "#9C27B0")
-        stat_card("Graduation Target", "Oct 2026", "WIL in progress", PASS_COL)
+        stat_card("DTN Final Attempt (2026)", "64% - Pass", "Cleared on the 4th try", "#9C27B0")
+        stat_card("Graduation Target", "Oct 2026", "WIL complete - all modules passed", PASS_COL)
 
         st.divider()
         st.markdown("##### Journey in One Line")
         st.info(
-            "From 2GB RAM to destiny — "
+            "From 2GB RAM to destiny - "
             "the machine had limits. I never did."
         )
 
 # ══════════════════════════════════════════════════════════════════════════
-# TAB 7 — SKILLS RADAR
+# TAB 7 - SKILLS RADAR
 # ══════════════════════════════════════════════════════════════════════════
 with tab7:
     st.markdown("### Skills Radar")
@@ -745,7 +702,7 @@ with tab7:
             color = (PASS_COL if score >= 65 else
                      ORANGE   if score >= 50 else
                      FAIL_COL if score > 0  else "#9E9E9E")
-            with st.expander(f"**{domain}** — {score:.1f}%"):
+            with st.expander(f"**{domain}** - {score:.1f}%"):
                 if not detail.empty:
                     detail_show = detail.copy()
                     detail_show["Marks"] = detail_show["Marks"].apply(lambda x: f"{x:.0f}%")

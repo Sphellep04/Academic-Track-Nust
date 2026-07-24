@@ -62,6 +62,9 @@ records = [
     (2025, 'Year 4', 7, 'Y4-S7', 'Mobile Application Development',     'MAP',  53, 'Pass'),
     (2025, 'Year 4', 7, 'Y4-S7', 'Data Networks',                      'DTN',  38, 'Fail'),
     (2025, 'Year 4', 7, 'Y4-S7', 'Software Verification & Validation', 'SVV',  60, 'Pass'),
+    # 2026 – Year 4 Sem 8, final requirements cleared
+    (2026, 'Year 4', 8, 'Y4-S8', 'Data Networks',                      'DTN',  64, 'Pass'),
+    (2026, 'Year 4', 8, 'Y4-S8', 'Work Integrated Learning',           'WSD',  70, 'Pass'),
 ]
 
 cols = ['Cal_Year', 'Study_Year', 'Sem_Num', 'Sem_Label', 'Course', 'Code', 'Marks', 'Result']
@@ -82,7 +85,7 @@ df_graded['Passed'] = df_graded['Result'] == 'Pass'
 
 # ── Summary stats ──────────────────────────────────────────────────────────
 print("=" * 60)
-print("  SHAPOPI PHELLEP — ACADEMIC ANALYSIS REPORT")
+print("  SHAPOPI PHELLEP - ACADEMIC ANALYSIS REPORT")
 print("  NUST | BSc Computer Science (Software Development)")
 print("=" * 60)
 
@@ -103,8 +106,8 @@ print(f"Pass / Fail               : {passed} / {failed}")
 print(f"Pass Rate                 : {100*passed/graded:.1f}%")
 print(f"Mean Mark                 : {avg:.1f}%")
 print(f"Median Mark               : {median:.1f}%")
-print(f"Highest Mark              : {best_mark}% — {best_course}")
-print(f"Lowest Mark               : {worst_mark}% — {worst_course}")
+print(f"Highest Mark              : {best_mark}% - {best_course}")
+print(f"Lowest Mark               : {worst_mark}% - {worst_course}")
 
 print("\nBy Study Year:")
 for yr in ['Year 1', 'Year 2', 'Year 3', 'Year 4']:
@@ -133,7 +136,7 @@ ax.axhline(50, color='gray', linestyle='--', linewidth=1, label='Pass mark (50%)
 ax.axhline(avg, color=NEUTRAL_COLOR, linestyle=':', linewidth=1.5, label=f'Overall avg ({avg:.1f}%)')
 ax.set_ylim(0, 100)
 ax.set_ylabel('Final Mark (%)')
-ax.set_title('Final Marks — All Modules (All Attempts)', fontsize=13, fontweight='bold')
+ax.set_title('Final Marks - All Modules (All Attempts)', fontsize=13, fontweight='bold')
 pass_patch = mpatches.Patch(color=PASS_COLOR, label='Pass')
 fail_patch = mpatches.Patch(color=FAIL_COLOR, label='Fail')
 ax.legend(handles=[pass_patch, fail_patch] + ax.get_legend_handles_labels()[0][2:])
@@ -188,7 +191,7 @@ for x_val, y_val in zip(year_trend['Cal_Year'], year_trend['Marks']):
 ax.axhline(50, color='gray', linestyle=':', linewidth=1)
 ax.set_xlabel('Calendar Year')
 ax.set_ylabel('Average Mark (%)')
-ax.set_title('Performance Trend (2021–2025)', fontsize=13, fontweight='bold')
+ax.set_title('Performance Trend (2021–2026)', fontsize=13, fontweight='bold')
 ax.legend()
 ax.set_ylim(30, 90)
 plt.tight_layout()
@@ -232,7 +235,7 @@ for bar, val in zip(bars, grade_counts):
             ha='center', va='bottom', fontsize=12, fontweight='bold')
 ax.set_xlabel('Grade (A≥75, B≥65, C≥55, D≥50, F<50)')
 ax.set_ylabel('Number of Modules')
-ax.set_title('Grade Distribution — All Graded Modules', fontsize=13, fontweight='bold')
+ax.set_title('Grade Distribution - All Graded Modules', fontsize=13, fontweight='bold')
 plt.tight_layout()
 plt.savefig(r'C:\Users\AdminTC\OneDrive - NUST\Documents\Academic Track\chart5_grades.png')
 plt.close()
@@ -266,7 +269,7 @@ ax.set_xticklabels(xlabels, fontsize=11)
 ax.axhline(50, color='gray', linestyle='--', linewidth=1)
 ax.set_ylim(0, 100)
 ax.set_ylabel('Final Mark (%)')
-ax.set_title('Retaken Modules — Attempt Comparison', fontsize=13, fontweight='bold')
+ax.set_title('Retaken Modules - Attempt Comparison', fontsize=13, fontweight='bold')
 pass_patch = mpatches.Patch(color=PASS_COLOR, label='Pass')
 fail_patch = mpatches.Patch(color=FAIL_COLOR, label='Fail')
 ax.legend(handles=[pass_patch, fail_patch])
@@ -275,7 +278,7 @@ plt.savefig(r'C:\Users\AdminTC\OneDrive - NUST\Documents\Academic Track\chart6_r
 plt.close()
 print("[Saved] chart6_retakes.png")
 
-# ── CHART 7: Heatmap — Marks by Semester × Year ───────────────────────────
+# ── CHART 7: Heatmap - Marks by Semester × Year ───────────────────────────
 # Use only unique final-attempt marks for a clean heatmap
 final_df = df_graded.sort_values('Cal_Year').drop_duplicates(subset=['Code'], keep='last')
 pivot = final_df.pivot_table(index='Study_Year', columns='Code', values='Marks', aggfunc='first')
@@ -294,7 +297,7 @@ plt.savefig(r'C:\Users\AdminTC\OneDrive - NUST\Documents\Academic Track\chart7_h
 plt.close()
 print("[Saved] chart7_heatmap.png")
 
-# ── CHART 8: Box Plot — Score Distribution by Year ────────────────────────
+# ── CHART 8: Box Plot - Score Distribution by Year ────────────────────────
 fig, ax = plt.subplots(figsize=(8, 5))
 groups = [df_graded[df_graded['Study_Year'] == yr]['Marks'].dropna().tolist()
           for yr in ['Year 1', 'Year 2', 'Year 3', 'Year 4']]
