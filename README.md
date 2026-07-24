@@ -1,4 +1,4 @@
-# 🎓 Academic Progress Dashboard - Phellep Shapopi
+# Academic Progress Dashboard - Phellep Shapopi
 
 [![Streamlit](https://img.shields.io/badge/Built%20with-Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://python.org)

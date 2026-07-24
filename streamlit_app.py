@@ -10,7 +10,6 @@ from io import BytesIO
 # ── Page config ────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="Academic Dashboard | Phellep Shapopi",
-    page_icon="🎓",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -179,7 +178,7 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
 # TAB 1 - OVERVIEW
 # ══════════════════════════════════════════════════════════════════════════
 with tab1:
-    st.title("🎓 Academic Dashboard")
+    st.title("Academic Dashboard")
     st.markdown("**Namibia University of Science and Technology** - Academic Progress Report")
     st.divider()
 
@@ -237,21 +236,21 @@ with tab1:
     # Timeline summary
     st.markdown("#### Academic Timeline")
     timeline_data = [
-        {"Year": "2021", "Event": "Enrolled at NUST - Year 1 begins", "Status": "✅"},
-        {"Year": "2022", "Event": "Year 2 Sem 3 - First fails (ASP, PRG2, ICE, DTN)", "Status": "⚠️"},
-        {"Year": "2023", "Event": "Retook Sem 3 & 4 - Cleared ASP & ICE, PRG2 still failing", "Status": "🔁"},
-        {"Year": "2024", "Event": "Year 3 - Cleared PRG2 (75%). SVV failed, then passed in 2025", "Status": "📈"},
-        {"Year": "2025", "Event": "Year 4 - 4 passes, DTN still outstanding", "Status": "🎯"},
-        {"Year": "2026", "Event": "DTN passed (64%) and WIL complete (70%) - degree requirements done", "Status": "🎓"},
+        {"Year": "2021", "Event": "Enrolled at NUST - Year 1 begins"},
+        {"Year": "2022", "Event": "Year 2 Sem 3 - First fails (ASP, PRG2, ICE, DTN)"},
+        {"Year": "2023", "Event": "Retook Sem 3 & 4 - Cleared ASP & ICE, PRG2 still failing"},
+        {"Year": "2024", "Event": "Year 3 - Cleared PRG2 (75%). SVV failed, then passed in 2025"},
+        {"Year": "2025", "Event": "Year 4 - 4 passes, DTN still outstanding"},
+        {"Year": "2026", "Event": "DTN passed (64%) and WIL complete (70%) - degree requirements done"},
     ]
     st.dataframe(pd.DataFrame(timeline_data).set_index("Year"), use_container_width=True)
 
     # PDF download
     st.divider()
     st.markdown("#### Export Report")
-    if st.button("📄 Generate PDF Report"):
+    if st.button("Generate PDF Report"):
         pdf_bytes = generate_pdf(df_all)
-        st.download_button("⬇️ Download PDF", data=pdf_bytes,
+        st.download_button("Download PDF", data=pdf_bytes,
                            file_name="Shapopi_Academic_Report.pdf", mime="application/pdf")
 
 # ══════════════════════════════════════════════════════════════════════════
@@ -385,8 +384,8 @@ with tab4:
         sub = retake_df[retake_df["Code"] == code].reset_index(drop=True)
         course_name = sub.iloc[0]["Course"]
         final_status = sub.iloc[-1]["Result"]
-        icon = "✅" if final_status == "Pass" else "❌"
-        with st.expander(f"{icon} **{code}** - {course_name}  ({len(sub)} attempts)"):
+        status_label = "Passed" if final_status == "Pass" else "Failed"
+        with st.expander(f"**{code}** - {course_name} - {status_label} ({len(sub)} attempts)"):
             cols = st.columns(len(sub))
             for i, (col, (_, row)) in enumerate(zip(cols, sub.iterrows())):
                 with col:
