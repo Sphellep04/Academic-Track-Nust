@@ -32,7 +32,7 @@ records = [
     (2021, 'Year 1', 2, 'Y1-S2', 'Data Structures & Algorithm 1',      'DSA1', 50, 'Pass'),
     (2021, 'Year 1', 2, 'Y1-S2', 'Math for Computing 2',               'MCI2', 70, 'Pass'),
     (2021, 'Year 1', 2, 'Y1-S2', 'Programming 1',                      'PRG1', 61, 'Pass'),
-    # 2022 – first attempt at Sem 3 & 4
+    # 2022 - first attempt at Sem 3 & 4
     (2022, 'Year 2', 3, 'Y2-S3a','Applied Statistics & Probability',   'ASP',  36, 'Fail'),
     (2022, 'Year 2', 3, 'Y2-S3a','Data Networks',                      'DTN',  None,'Fail'),
     (2022, 'Year 2', 3, 'Y2-S3a','Information System Security',        'ISS',  57, 'Pass'),
@@ -41,13 +41,13 @@ records = [
     (2022, 'Year 2', 3, 'Y2-S3a','English for Academic Purposes',      'EAP',  50, 'Pass'),
     (2022, 'Year 2', 4, 'Y2-S4a','Ethics for Computing',               'EFC',  60, 'Pass'),
     (2022, 'Year 2', 4, 'Y2-S4a','Innovation Creativity & Entre',      'ICE',  34, 'Fail'),
-    # 2023 – retakes + new modules
+    # 2023 - retakes + new modules
     (2023, 'Year 2', 3, 'Y2-S3b','Applied Statistics & Probability',   'ASP',  58, 'Pass'),
     (2023, 'Year 2', 3, 'Y2-S3b','Data Networks',                      'DTN',  None,'Fail'),
     (2023, 'Year 2', 3, 'Y2-S3b','Programming 2',                      'PRG2', 16, 'Fail'),
     (2023, 'Year 2', 4, 'Y2-S4b','Data Analytics',                     'DTA',  52, 'Pass'),
     (2023, 'Year 2', 4, 'Y2-S4b','Innovation Creativity & Entre',      'ICE',  66, 'Pass'),
-    # 2024 – Year 3
+    # 2024 - Year 3
     (2024, 'Year 3', 5, 'Y3-S5', 'Data Structures & Algorithm 2',      'DSA2', 74, 'Pass'),
     (2024, 'Year 3', 5, 'Y3-S5', 'Software Processes',                 'SPS',  53, 'Pass'),
     (2024, 'Year 3', 5, 'Y3-S5', 'Software Verification & Validation', 'SVV',  28, 'Fail'),
@@ -56,13 +56,13 @@ records = [
     (2024, 'Year 3', 6, 'Y3-S6', 'Sustainability & Development',        'SYD', 68, 'Pass'),
     (2024, 'Year 3', 6, 'Y3-S6', 'Web Development',                    'WAD',  63, 'Pass'),
     (2024, 'Year 3', 6, 'Y3-S6', 'Distributed Systems & Applications', 'DSA',  62, 'Pass'),
-    # 2025 – Year 4
+    # 2025 - Year 4
     (2025, 'Year 4', 7, 'Y4-S7', 'Artificial Intelligence',            'ARI',  65, 'Pass'),
     (2025, 'Year 4', 7, 'Y4-S7', 'Compiler Techniques',                'CTE',  73, 'Pass'),
     (2025, 'Year 4', 7, 'Y4-S7', 'Mobile Application Development',     'MAP',  53, 'Pass'),
     (2025, 'Year 4', 7, 'Y4-S7', 'Data Networks',                      'DTN',  38, 'Fail'),
     (2025, 'Year 4', 7, 'Y4-S7', 'Software Verification & Validation', 'SVV',  60, 'Pass'),
-    # 2026 – Year 4 Sem 8, final requirements cleared
+    # 2026 - Year 4 Sem 8, final requirements cleared
     (2026, 'Year 4', 8, 'Y4-S8', 'Data Networks',                      'DTN',  64, 'Pass'),
     (2026, 'Year 4', 8, 'Y4-S8', 'Work Integrated Learning',           'WSD',  70, 'Pass'),
 ]
@@ -191,7 +191,7 @@ for x_val, y_val in zip(year_trend['Cal_Year'], year_trend['Marks']):
 ax.axhline(50, color='gray', linestyle=':', linewidth=1)
 ax.set_xlabel('Calendar Year')
 ax.set_ylabel('Average Mark (%)')
-ax.set_title('Performance Trend (2021–2026)', fontsize=13, fontweight='bold')
+ax.set_title('Performance Trend (2021-2026)', fontsize=13, fontweight='bold')
 ax.legend()
 ax.set_ylim(30, 90)
 plt.tight_layout()

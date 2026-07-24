@@ -302,7 +302,7 @@ with tab2:
 
     # Chart 3: Performance trend
     with col2:
-        st.markdown("#### Performance Trend (2021–2026)")
+        st.markdown("#### Performance Trend (2021-2026)")
         yr_trend = df_graded.groupby("Year")["Marks"].mean().reset_index()
         slope, intercept, r, _, _ = stats.linregress(yr_trend["Year"], yr_trend["Marks"])
         trend_y = slope * yr_trend["Year"] + intercept
@@ -592,7 +592,7 @@ I'm finishing it as someone who learned, slowly and sometimes painfully, what it
                 unsafe_allow_html=True
             )
 
-        stat_card("Years at NUST", "5", "2021 – 2026", BLUE)
+        stat_card("Years at NUST", "5", "2021 - 2026", BLUE)
         stat_card("Modules Attempted", str(len(df_all)), "across all semesters", BLUE)
         stat_card("Overall Pass Rate", f"{100*df_graded['Passed'].mean():.0f}%",
                   f"{int(df_graded['Passed'].sum())} passed", PASS_COL)
