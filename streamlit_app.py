@@ -159,6 +159,9 @@ with st.sidebar:
 # ── Load ───────────────────────────────────────────────────────────────────
 df_all = load_from_records()
 df_graded = df_all[df_all["Marks"].notna()].copy()
+# One row per module: its final (most recent) attempt - the basis for GPA,
+# pass rate, and any other "current standing" stat.
+df_final = df_graded.sort_values("Year").drop_duplicates(subset=["Code"], keep="last")
 
 # Apply filters
 df_view = df_graded[df_graded["Study_Year"].isin(years)].copy()
@@ -182,26 +185,28 @@ with tab1:
     st.markdown("**Namibia University of Science and Technology** - Academic Progress Report")
     st.divider()
 
-    # KPI cards
+    # KPI cards. Pass Rate counts every attempt (so it still reflects the
+    # retakes that were failed along the way). Average Mark and GPA use each
+    # module's final attempt only - your current standing, not dragged down
+    # by retakes that were later passed.
     total        = len(df_all)
     n_graded     = len(df_graded)
     n_pass       = int(df_graded["Passed"].sum())
-    n_fail       = int((~df_graded["Passed"]).sum())
-    avg_mark     = df_graded["Marks"].mean()
-    gpa          = df_graded["GPA_Points"].mean()
+    avg_mark     = df_final["Marks"].mean()
+    gpa          = df_final["GPA_Points"].mean()
     pass_rate    = 100 * n_pass / n_graded
 
-    c1, c2, c3, c4, c5 = st.columns(5)
+    c1, c2, c3, c4 = st.columns(4)
     c1.metric("Modules Attempted", total)
     c2.metric("Pass Rate", f"{pass_rate:.1f}%", f"{n_pass} passed")
     c3.metric("Average Mark", f"{avg_mark:.1f}%")
     c4.metric("Est. GPA", f"{gpa:.2f} / 4.00")
-    c5.metric("Outstanding Fails", n_fail, delta_color="inverse")
 
     st.divider()
     col_l, col_r = st.columns(2)
 
-    # Year-by-year summary table
+    # Year-by-year summary table (all attempts, so failed retakes still count
+    # toward the year they were taken)
     with col_l:
         st.markdown("#### Progress by Study Year")
         year_summary = df_graded.groupby("Study_Year").agg(
@@ -214,7 +219,7 @@ with tab1:
         year_summary["GPA"] = year_summary["GPA"].round(2)
         st.dataframe(year_summary.set_index("Year"), use_container_width=True)
 
-    # Grade distribution donut
+    # Grade distribution donut (all attempts, including superseded fails)
     with col_r:
         st.markdown("#### Grade Distribution")
         grade_order = ["A","B","C","D","F"]
@@ -332,8 +337,7 @@ with tab2:
 
     # Chart 5: Heatmap
     st.markdown("#### Module Marks Heatmap (Best/Final Attempt)")
-    final_df = df_graded.sort_values("Year").drop_duplicates(subset=["Code"], keep="last")
-    pivot = final_df.pivot_table(index="Study_Year", columns="Code", values="Marks", aggfunc="first")
+    pivot = df_final.pivot_table(index="Study_Year", columns="Code", values="Marks", aggfunc="first")
     pivot = pivot.reindex(["Year 1","Year 2","Year 3","Year 4"])
     fig5 = px.imshow(pivot, text_auto=True, color_continuous_scale="RdYlGn",
                      zmin=0, zmax=100, aspect="auto",
@@ -428,7 +432,7 @@ with tab5:
     st.markdown("### GPA Calculator")
     st.caption("Estimated GPA using a 4-point scale: A(≥75)=4.0 · B(≥65)=3.0 · C(≥55)=2.0 · D(≥50)=1.0 · F(<50)=0.0")
 
-    final_for_gpa = df_graded.sort_values("Year").drop_duplicates(subset=["Code"], keep="last")
+    final_for_gpa = df_final
     gpa_overall   = final_for_gpa["GPA_Points"].mean()
 
     c1, c2, c3 = st.columns(3)
@@ -465,15 +469,7 @@ with tab5:
 # TAB 6 - MY STORY
 # ══════════════════════════════════════════════════════════════════════════
 with tab6:
-    # Computed stats to embed in the story
-    avg_y2 = df_graded[df_graded["Study_Year"] == "Year 2"]["Marks"].mean()
-    avg_y3 = df_graded[df_graded["Study_Year"] == "Year 3"]["Marks"].mean()
-    improvement = avg_y3 - avg_y2
-
-    col_story, col_stats = st.columns([2, 1])
-
-    with col_story:
-        st.markdown("""
+    st.markdown("""
 # The Story Behind the Numbers
 
 > *People look at a transcript and see numbers. A grade here, a fail there, a retake somewhere in between.
@@ -576,41 +572,6 @@ I'm finishing it as someone who learned, slowly and sometimes painfully, what it
 *BSc Computer Science - Software Development | Namibia University of Science and Technology*
 """)
 
-    with col_stats:
-        st.markdown("### By the Numbers")
-        st.markdown("<br>", unsafe_allow_html=True)
-
-        # Callout cards
-        def stat_card(label, value, note="", color="#2196F3"):
-            st.markdown(
-                f"""<div style='padding:16px;border-radius:10px;background:{color}18;
-                border-left:4px solid {color};margin-bottom:12px'>
-                <div style='font-size:0.8em;color:#888'>{label}</div>
-                <div style='font-size:1.6em;font-weight:700;color:{color}'>{value}</div>
-                <div style='font-size:0.75em;color:#666'>{note}</div></div>""",
-                unsafe_allow_html=True
-            )
-
-        stat_card("Years at NUST", "5", "2021 - 2026", BLUE)
-        stat_card("Modules Attempted", str(len(df_all)), "across all semesters", BLUE)
-        stat_card("Overall Pass Rate", f"{100*df_graded['Passed'].mean():.0f}%",
-                  f"{int(df_graded['Passed'].sum())} passed", PASS_COL)
-        stat_card(
-            "Grade Improvement",
-            f"+{improvement:.1f}%",
-            "Year 2 → Year 3 average",
-            "#FF9800"
-        )
-        stat_card("DTN Final Attempt (2026)", "64% - Pass", "Cleared on the 4th try", "#9C27B0")
-        stat_card("Graduation Target", "Oct 2026", "WIL complete - all modules passed", PASS_COL)
-
-        st.divider()
-        st.markdown("##### Journey in One Line")
-        st.info(
-            "From 2GB RAM to destiny - "
-            "the machine had limits. I never did."
-        )
-
 # ══════════════════════════════════════════════════════════════════════════
 # TAB 7 - SKILLS RADAR
 # ══════════════════════════════════════════════════════════════════════════
@@ -622,7 +583,7 @@ with tab7:
     )
 
     # Use best/final attempt per module for the radar
-    final_radar = df_graded.sort_values("Year").drop_duplicates(subset=["Code"], keep="last")
+    final_radar = df_final
 
     # Build domain scores
     domain_scores, domain_modules, domain_details = [], [], []
